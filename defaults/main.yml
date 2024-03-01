@@ -1,0 +1,153 @@
+---
+github_username: 'firstname-em'
+github_email: 't-lastname@gmail.com'
+wallpaper_git_project: 'https://github.com/{{ github_username }}/wallpaper-dumps.git'
+pictures_git_project: 'https://github.com/{{ github_username  }}/wallpaper-dumps.git'
+tm_pictures_dir: 'cartoon-headshots'
+# GHCLI HOME VARIABLES 
+ghuser_home: firstname-em 
+ghcli_proto_mode: github.com 
+GHCLI_PROTO_HOME: ssh 
+ghhost_work: github.com 
+ghcli_proto_work: https 
+tfenv_version: 1.2.3 
+gh_cli_setup_commands:
+  - 'git config --global user.name "firstname- -lastname" '
+  - 'git config --global user.email "{{ github_email }}" '
+  - 'gh config set editor vim'
+  - 'gh config set git_protocol ssh --host github.com'
+  - 'gh config set prompt disabled'
+  - 'gh config set prompt disabled'
+
+apt_pkg_list:  
+  - autoconf 
+  - automake 
+  - build-essential 
+  - cmake 
+  - curl 
+  - dnsutils
+  - docker
+  - elinks 
+  - git 
+  - gh
+  - gnome-colors
+  - gnupg
+  - gnupg2
+  - gparted 
+  - ffmpeg 
+  - gh 
+  - git 
+  - gnome-shell-extensions
+  - gnome-tweaks 
+  - gvfs 
+  - magic-wormhole 
+  - nano 
+  - ncdu 
+  - net-tools 
+  - neofetch 
+  - openssl
+  - packer 
+  - pass 
+  - pre-commit 
+  - python-is-python3
+  - python3
+  - python3-pip 
+  - ranger 
+  - ripgrep 
+  - rsync 
+  - rsyslog 
+  - samba-common 
+  - snapd 
+  - vagrant 
+  - vim 
+  - vlc 
+  - wget 
+  - xclip 
+  - youtube-dl 
+  - yt-dlp
+
+snap_pkg_list:
+  - aws-cli 
+  - code 
+  - docker 
+  - gimp 
+  - kubectl 
+  - packer 
+  - packer-io 
+
+gnome_pkg_list:
+  - gir1.2-gtop-2.0 
+  - gir1.2-nm-1.0 
+  - gir1.2-clutter-1.0 
+  - gnome-system-monitor 
+  - gnome-shell-extension-manager
+
+homebrew_installed_packages:
+  - ansible
+  - ansible-lint
+  - awscli 
+  - docker
+  - docker-compose
+  - clocker
+  - commitizen 
+  - firefox
+  - gh
+  - gimp
+  - git
+  - itsycal 
+  - libreoffice
+  - lsd 
+  - iterm2
+  - jq 
+  - kubernetes-cli@1.22
+  - nvm 
+  - packer 
+  - packer-completion
+  - pass
+  - pip
+  - ripgrep 
+  - molecule
+  - pre-commit
+  - py-tf-utils  
+  - tfenv
+  - vagrant 
+  - wget  
+  - zsh-autosuggestions
+  
+# Project Lists   
+ansible_projects: 
+  - ansible-role-redis
+  - ansible-role-template
+  - ansible-role-local-user-check	
+  - ansible-role-docker-setup-poc
+  - ansible-role-postgresql-questionnaire
+  - ansible-role-influxdb
+  - ansible-role-redis
+  - ansible-role-wazuh	 
+  
+github_projects:
+  - work-related   
+  - vagrant-dojo
+  - terraform-dojo
+  - jenkins-dojo
+  - python-dojo
+  - kubernetes-dojo 
+  - -lastname.com
+  - blog.-lastname.com
+
+#MAC OSX 
+homebrew_folders_base:
+  - Cellar
+  - Homebrew
+  - Frameworks
+  - Caskroom
+  - bin
+  - etc
+  - include
+  - lib
+  - opt
+  - sbin
+  - share
+  - share/zsh
+  - share/zsh/site-functions
+  - var

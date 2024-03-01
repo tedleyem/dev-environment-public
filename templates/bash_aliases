@@ -1,0 +1,660 @@
+# BASH ALISES FOR DEV ENVIRONMENT
+# Aliases & Functions for zrcsh shell
+# ZSH THEME 
+ZSH_THEME=amuse
+# project variable
+export PROJECT_PATH="${HOME}/projects"
+export FPATH=~/.zsh_funcs:$FPATH
+
+###############################
+# SETTING UP COLORS 
+###############################
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]
+\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+#unset color_prompt force_color_prompt
+#set color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+ 
+alias less='less --RAW-CONTROL-CHARS'
+export LS_OPTS='--color=auto'
+alias ls='ls ${LS_OPTS}'
+#export TERM=xterm-color
+export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
+# set colors in terminal
+export TERM=xterm-256color
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# export colors in gnome terminal
+#\u - user name
+#\h - short hostname
+#\W - current working dir
+#\? - exit status of the command
+export PS1="{\[\e[32m\]\u\[\e[m\]@\[\e[36m\]\h\[\e[m\]:\W_\$?}$ "
+
+ 
+
+###############################
+# SETTING UP aUTOCOMPLETE
+############################### 
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+###############################
+# SETTING UP Aliases
+############################### 
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+# alias shortcuts 
+alias logs='journalctl -f'
+alias end-logs='journalctl -xe'
+alias start='systemctl start'
+alias stop='systemctl stop'
+alias status='systemctl status'
+alias restart='systemctl restart'
+alias update-bashrc='. ~/.bashr'
+alias update-alias='source ~/.bashrc'
+alias campfire='aafire -driver curses'
+alias check-moon='curl wttr.in/Moon'
+alias moon='curl wttr.in/Moon'
+alias check-weather='curl wttr.in'
+alias weather='curl wttr.in'
+alias crypto-rates='curl rate.sx' 
+alias crypto='curl rate.sx' 
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias grep='grep --color=auto'
+alias install='sudo apt install -y'
+alias l='ls -CF'
+alias la='ls -A'
+alias ll='ls -alF'
+alias ls='ls --color=auto'
+alias cdans='cd /home/t-lastname/projects/ansible'
+alias p3='python3'
+alias p3p='python3 -m pip'
+alias p3pi='python3 -m pip install'
+alias samba-deps='cd /run/user/1000/gvfs/smb-share:server=brain,share=departments'
+alias search='apt-cache search'
+alias start-matrix='cmatrix'
+alias tartar='tar -zxvf'
+alias update='sudo apt-get update'
+alias update-bashrc='source ~/.bashrc' 
+alias upgrade='sudo apt-get upgrade -y'
+alias check-size='du -sh *'
+alias dush='du -sh *'
+alias sort-size='du -sh * | sort -h'
+alias dusort='du -sh * | sort -h'
+# VIM shortcuts
+alias update-vim='vim +PluginInstall +qall'
+# kubernetes shortcut 
+alias k='kubectl'
+alias mk='minikube'
+alias mkc='minikube kubectl --'
+# zsh alias 
+alias zedit='vim ~/.zshrc'
+alias srcz='source ~/.zshrc'  
+alias srcb='source ~/.bashrc'  
+# Git shortcuts 
+alias gstat='git status'
+alias gp='git push'
+alias ghas='gh auth status' # get current gh-cli status 
+# search and list all repos that match the filters
+ghls='gh repo list -L 1000 --no-archived ' 
+# Vagrant shortcuts 
+alias vg='vagrant'
+alias vgp='vagrant provision'
+alias vgup='vagrant provision'
+# kubernetes shortcut 
+alias k='kubectl'
+alias mk='minikube' 
+alias cdp='cd ~/projects' 
+alias update-vim='vim +PluginInstall +qall'
+alias precommit='pre-commit'
+alias prcinit='precommit install && precommit autoupdate'
+
+
+###############################
+# MISC ALIASES 
+###############################
+# remove spaces from files in current dir
+clearspaces-file () {
+  find . -name "* *" -type d | rename 's/ /_/g'
+}
+# remove spaces from directories in current dir
+clearspaces-dir () { 
+  find . -name "* *" -type f | rename 's/ /_/g'
+}
+
+
+# Add git branch if its present in working dir
+parse_git_branch () {
+ git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+if [ "$color_prompt" = yes ]; then
+ PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\$ '
+else
+ PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)\$ '
+fi
+#unset color_prompt force_color_prompt 
+
+###############################
+# DOCKER ALIASES 
+############################### 
+alias dcps='sudo docker ps'
+alias dci='sudo docker images'
+alias dcvls='sudo docker volume ls'
+alias dcnls='sudo docker network ls'
+alias dck='docker rmi -f $(docker images -a -q)'
+alias dcstop='sudo docker stop $(docker ps -a -q)'
+alias dcom='docker-compose'
+alias dcu='docker-compose up -d'
+alias dcd='docker-compose down'
+alias dcl='docker-compose logs'
+alias dckb='docker-compose build'
+alias dcub='docker-compose up --build'
+alias dcvp='docker volume prune -f'
+alias dcnp='docker network prune -f'
+alias dcrmi='docker rmi -f $(docker images -a -q)' 
+
+dcc () {  
+  echo 'Stopping running containers (if available)...'  
+  docker stop $(docker ps -aq) && sleep 1
+  echo 'Removing containers ..' 
+  docker rm $(docker ps -aq)  && sleep 1
+  echo 'Removing images ...' 
+  docker rmi $(docker images -q)  && sleep 1
+  echo 'Revoming docker container volumes (if any)' 
+  docker volume rm $(docker volume ls -q)  && sleep 1
+
+} 
+
+###############################
+# GIT ALIASES 
+###############################
+#alias gcm='git commit -m'
+gitdefaultbranch () { #noface
+  local gitbranch=$(git branch -a)
+  if [[ $gitbranch == *"origin/HEAD -> origin/main"* ]]; then
+    echo "main"
+  else
+    echo "master"
+  fi
+}
+
+# update all git repo's in github dir
+gpall () {
+  cd /home/t-lastname/projects/
+  find . -mindepth 1 -maxdepth 1 -type d -print -exec git -C {} pull \;
+  cd -
+} 
+
+gcm() {
+  git checkout $(gitdefaultbranch)
+}
+
+# create new branch
+gnb () {
+  branchName=$1
+  git checkout -b $branchName
+  git push --set-upstream origin $branchName
+} 
+
+# delete branch
+gdb () {
+  branchName=$1
+  git branch -d $branchName
+  git push origin --delete $branchName
+}
+
+# delete branch and return to master or main
+gdbm () {
+  local branches=$(git branch)
+  local top=$(gitdefaultbranch)
+  local oldbranch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ $oldbranch == $top ]]; then
+    echo "${RED}current branch is $top, exiting...${NOCOLOR}"
+    return
+  fi
+  git checkout $top
+  git pull
+  gdb $oldbranch
+}
+
+# create pull request from current branch to target branch, default to master
+gpr () {
+  local target=$1
+  if [[ $target == "" ]]; then
+    target=$(gitdefaultbranch)
+  fi
+  local currentbranch=$(git branch --show-current)
+  local prstatus=$(gh pr status)
+  local currentbranchstatus=$(echo $prstatus | rg -i "$currentbranch")
+  if [[ $currentbranchstatus == *"Merged"* || $prstatus == *"There is no pull request associated with [$currentbranch]"* ]]; then
+    echo "${BLUE}[ creating pull request... ]${NOCOLOR}"
+    gh pr create --base $target --fill
+    local prurl=$(getprurl $currentbranch)
+    echo -n $prurl | xclip
+    echo "${YELLOW}copied to clipboard${NOCOLOR}"
+  else
+    echo "${BLUE}[ pull request already exists ]${NOCOLOR}"
+    local prurl=$(getprurl $currentbranch)
+    echo "pr url: $prurl"
+    echo -n $prurl | xclip
+    echo "${YELLOW}copied to clipboard${NOCOLOR}"
+  fi
+}
+
+# git add and commit
+gcom () {
+  local msg=${1}
+  if [[ $msg == "" ]]; then
+    echo "Missing commit message. Exiting..."
+    return
+  else
+    echo "Running command: ${BLUE}git add . ${NOCOLOR}&&${GREEN} git commit -m \"${YELLOW}$msg${GREEN}\"${NOCOLOR}"
+    echo "[ ${BLUE}GIT ADD${NOCOLOR} ]"
+    git add . 
+    echo "[ ${GREEN}GIT COMMIT${NOCOLOR} ]"
+    git commit -m "$msg"
+    echo "[ ${GREEN}GIT COMMIT STATUS${NOCOLOR} ]"
+    git status 
+  fi
+}
+
+# search and list all repos that match the filters
+grls () {
+  gh repo list t-lastname -L 1000 --no-archived
+}
+
+# search repos in github using filter and clone to local
+grclone () {
+  local args=(${1})
+  local searchCMD="gh repo list t-lastname -L 1000 --no-archived"
+  if [[ $1 == "--no-tf" ]]; then
+    args=(${2})
+    searchCMD="$searchCMD | rg -v -e '-tf'"
+  fi
+  for arg in $args
+  do
+    local add=" | rg -i --fixed-strings --color=never '$arg' "
+    if [[ $arg == *"-"* ]]; then
+      local add=" | rg -i --color=never -e '$arg' "
+    fi
+    searchCMD="$searchCMD$add"
+  done
+  echo "${YELLOW}searching for repositories...${NOCOLOR}"
+  local found=$(eval $searchCMD)
+  if [[ $found == "" ]]; then
+    echo "${RED}no matching projects found, exiting...${NOCOLOR}"
+    return
+  fi
+  local first=$(head -1 <<< $found)
+  local firstname=${first%%$'\t'*}
+  echo "${GREEN}[ found ]:${NOCOLOR}"
+  local parts=("${(@f)found}")
+  for repo in $parts
+  do
+    local name=${repo%%$'\t'*}
+    for filter in $range
+    do
+      name=${name/$filter/"${RED}$filter${NOCOLOR}"}
+    done
+    echo $name
+  done
+  echo -n "${BLUE}do you want to clone: [ ${YELLOW}$firstname${BLUE} ]: ${NOCOLOR}"
+  read -k1
+  if [[ ${REPLY} == $'\n' ]]; then
+    echo "${GREEN}[ cloning ]: ${NOCOLOR}${YELLOW}$firstname${NOCOLOR}" 
+  else
+    echo "${RED}\ncancelling clone...${NOCOLOR}"
+  fi
+}
+ 
+# copy aliases to home dir 
+cptme() {
+  if [[ -f ~/projects/dev-environment/bash_aliases ]]
+  then
+      cp ~/projects/dev-environment/bash_aliases ~/.bash_aliases
+      source ~/.bashrc
+      echo "updated aliases"
+  else
+      echo "bash_aliases not found !!"
+      echo "check working branch of dev-environment"
+  fi 
+ }
+
+# Update personal notes repo 
+update-notes() {
+  TIMESTAMP=`date`
+  NOTES_DIR='/home/t-lastname/projects/work-related'
+  MESSAGE=" updating notes with timestamp: $TIMESTAMP " 
+  echo "GRABBING LATEST NOTES"
+  cd $NOTES_DIR && git pull 
+  echo "UPDATING NOTES"
+  cd $NOTES_DIR 
+  git add . 
+  git status 
+  git commit -m " $MESSAGE "  
+  git push
+  echo "Notes Updated!" 
+
+ }
+
+###############################
+# GH-CLI ALIASES 
+###############################
+alias ghauth='gh auth status'
+
+# create ssh key and push to github 
+ghp1 () {
+  GHUSER=t-lastname
+  ghcli_proto_mode=github.com
+  ghhost_work=enterprise.github.com
+  GHPROTO=ssh 
+  CLITOKEN_HOME=$(echo $ghcli_home)
+  CLITOKEN_WORK=$(echo $ghcli_work)
+  # logout of current user 
+  gh auth status 
+  # unset current gh token 
+  echo "Unset gh-cli token" && sleep 1
+  unset GH_TOKEN
+  echo "LOGGING OUT OF EXISTING GH PROFILE" && sleep 1
+  echo "logout of work gh profile" && sleep 1
+  #export GH_TOKEN=$CLITOKEN_WORK
+  gh auth logout -h $ghhost_work 
+  echo "logout of personal gh profile" && sleep 1 
+  gh auth logout -h $ghcli_proto_mode
+  # set env variable to gh-work token
+  echo "Updating new token" && sleep 1 
+  echo "Logging into gh-cli as $GHUSER" && sleep 1
+  echo $CLITOKEN_HOME | gh auth login -h $ghcli_proto_mode --with-token  
+  gh config set git_protocol ssh --host $ghcli_proto_mode
+  # print status to confirm connection
+  gh auth status 
+}
+
+ghp2 () {
+  GHUSER=t-lastname1
+  ghcli_proto_mode=github.com
+  ghhost_work=enterprise.github.com
+  GHPROTO=ssh
+  CLITOKEN_HOME=$(echo $ghcli_home)
+  CLITOKEN_WORK=$(echo $ghcli_work)
+  # logout of current user 
+  gh auth status 
+  # unset current gh token 
+  echo "Unset gh-cli token" && sleep 1
+  unset GH_TOKEN
+  echo "LOGGING OUT OF EXISTING GH PROFILE" && sleep 1
+  echo "logout of work gh profile" && sleep 1 
+  gh auth logout -h $ghhost_work 
+  echo "logout of personal gh profile" && sleep 1 
+  gh auth logout -h $ghcli_proto_mode
+  # set env variable to gh-work token
+  echo "Updating new token" && sleep 1 
+  echo "Logging into gh-cli as $GHUSER" && sleep 1
+  echo $CLITOKEN_WORK | gh auth login -h $ghhost_work --with-token  
+  gh config set git_protocol ssh --host $ghhost_work
+  # print status to confirm connection
+  gh auth status  
+}
+
+###############################
+# MISC ALIASES 
+###############################
+#funcs-ignore
+getsize() {
+  local array=($*)
+  echo ${#array[@]}
+}
+
+startswith() {
+  local test=$1
+  local check=$2
+  if [[ $test == "$check"* ]]; then
+    echo true
+  else
+    echo false
+  fi 
+}
+
+endswith() {
+  local test=$1
+  local check=$2
+  if [[ $test == *"$check" ]]; then
+    echo true
+  else
+    echo false
+  fi
+}
+
+contains() {
+  local test=$1
+  local searchfor=$2
+  if [[ $test == *"$searchfor"* ]]; then
+    echo true
+  else
+    echo false
+  fi
+} 
+ 
+
+
+###############################
+# SEARCH ALIASES 
+###############################
+# search all projects' contents in the project's directory for the filter
+findp() {
+  if [[ $1 == 'help' && $2 == '' ]]; then
+    zfunchelp $0
+    return
+  fi
+  if [[ $1 == '--all' ]]; then
+    if [[ $2 == '' ]]; then
+      echo "${RED}search filter missing, use '${PINK}$0 help${RED}' for more information.\nexiting...${NOCOLOR}"
+    fi
+    rg -A5 -B3 -i -e "$2" $PROJECT_PATH
+  else
+    local args=(${@:1:#})
+    local searchCMD="rg --type-add 'tf:*.{tf,tfvars}' --type-add 'gomod:*.mod' --type-add 'jenk:Jenkinsfile' -B1 -A10 -i -t tf -t gomod -t jenk -U '' $PROJECT_PATH"
+    for arg in $args
+    do
+      local add=" | rg -i --fixed-strings --color=always '$arg' "
+      if [[ $arg == *"-"* ]]; then
+        local add=" | rg -i --color=always -e '$arg' "
+      fi
+      searchCMD="$searchCMD$add"
+    done
+    eval $searchCMD
+  fi
+}
+
+# search and get projects that match the provided filters
+listp() {
+  if [[ $1 == 'help' && $2 == '' ]]; then
+    zfunchelp $0
+    return
+  fi
+  local args=(${@:1:#})
+  if [[ $args == "" ]]; then
+    echo "${RED}search filter missing, use '${PINK}$0 help${RED}' for more information.\nexiting......${NOCOLOR}"
+    return
+  fi
+  local color="always"
+  if [[ $1 == *"--no-color"* ]]; then
+    args=(${@:2:#})
+    color="never"
+  fi
+  local searchCMD="ls $PROJECT_PATH"
+  for arg in $args
+  do
+    local add=" | rg -i --fixed-strings --color=$color '$arg' "
+    if [[ $arg == *"-"* ]]; then
+      local add=" | rg -i --color=$color -e '$arg' "
+    fi
+    searchCMD="$searchCMD$add"
+  done
+  local found=$(eval $searchCMD)
+  if [[ $found == "" ]]; then
+    echo "${RED}failed to find matching projects...${NOCOLOR}"
+  else
+    if [[ $color == "always" ]]; then
+      echo "${GREEN}[ found ]:${NOCOLOR}"
+    fi
+    echo $found
+  fi
+}
+
+# list all terraform projects
+listf() {
+  if [[ $1 == 'help' && $2 == '' ]]; then
+    zfunchelp $0
+    return
+  fi
+  local tfs=()
+  local projects=($(ls $PROJECT_PATH))
+  for project in $projects
+  do
+    local prls=$(ls $PROJECT_PATH/$project)
+    if [[ $prls == *"main.tf"* ]]; then
+      echo $project
+    fi
+  done
+} 
+
+# search the projects directory that match the filter and cd into the result
+cdpr() {
+  if [[ $1 == 'help' && $2 == '' ]]; then
+    zfunchelp $0
+    return
+  fi
+  local searchCMD="ls $PROJECT_PATH"
+  for var in ${@:1:#}
+  do
+    searchCMD="$searchCMD | rg -i --fixed-strings '$var'"
+  done
+  local found=$(eval $searchCMD)
+  local first=$(head -1 <<< $found | sed -E "s/"$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g")
+  cd $PROJECT_PATH/$first
+}
+
+# show currently used colors
+showcolors() {
+  if [[ $1 == 'help' && $2 == '' ]]; then
+    zfunchelp $0
+    return
+  fi
+  local colors=$(cat ${HOME}/.zshrc | rg "033\[")
+  colors=("${(@f)colors}")
+  for color in $colors
+  do
+    local code=${color##*"["}
+    code=${code%%"\""*}
+    code=${code//"'"/''}
+    local name=${color%%"="*}
+    name=${name##*"export "}
+    echo -n "\033[${code}$name : ${NOCOLOR}"
+    echo -n "$code : "
+    echo "\033[${code}the quick brown fox jumps over the lazy dog${NOCOLOR}"
+  done
+}
+
+# print all available colors
+coloropts() {
+  if [[ $1 == 'help' && $2 == '' ]]; then
+    zfunchelp $0
+    return
+  fi
+  for i in {0..255}
+  do
+    local code="38;5;${i}m"
+    echo -n "$code : "
+    echo "\033[${code}the quick brown fox jumps over the lazy dog${NOCOLOR}"
+  done
+}
+
+# print currently used colors' codes
+colorcodes() {
+  local opts=$(showcolors | sed -E "s/"$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g" | xargs)
+  opts=${opts//"the quick brown fox jumps over the lazy dog"/""}
+  opts=${opts//":"/""}
+  local names=($(echo $opts | rg -o --color=never "[A-Z]+" | xargs))
+  for name in $names
+  do
+    opts=${opts//$name/""}
+  done
+  local codes=($(echo $opts | xargs))
+  local colors=()
+  for code in $codes
+  do
+    colors+="033[${code}"
+  done
+  echo $colors
+}
+
+# print the current branch checked out
+getprojectbranch() {
+  if [[ $1 == 'help' && $2 == '' ]]; then
+    zfunchelp $0
+    return
+  fi
+  if [[ $1 == "" ]]; then
+    git branch --show-current
+  else
+    local project=$1
+    local currentPath=$(pwd)
+    cd $PROJECT_PATH/$project
+    git branch --show-current
+    cd $currentPath
+  fi
+}

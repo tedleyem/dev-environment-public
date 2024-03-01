@@ -1,0 +1,536 @@
+#Functions for zrcsh specific to firstname- -lastname  
+cptme() {
+  echo "Updating local aliases"
+    if [[ -f $PROJECT_PATH/dev-environment/templates/firstname-.zsh ]]
+  then
+      echo "updating .zshrc"
+      cp ~/.zshrc ~/.zshrc.backup.$TIMESTAMP.txt
+      cp $PROJECT_PATH/dev-environment/templates/firstname-.zsh ~/.zshrc
+      source ~/.zshrc
+      echo "updated aliases"
+  else
+      echo "firstname-.zsh not found"
+      echo "check working branch of simon-zfuncs"
+  fi  
+ }
+# Update personal notes repo 
+update-notes() {
+  #NOTES_DIR='~/projects/work-related' /Users/firstname--lastname/projects/work-related
+  NOTES_DIR="$PROJECT_PATH/work-related"
+  MESSAGE=" updating notes with timestamp: $TIMESTAMP " 
+  CURRENT_DIR=$(pwd)
+  cptme
+  echo "GRABBING LATEST NOTES"
+  cd $NOTES_DIR && git pull 
+  echo "UPDATING NOTES"
+  cd $NOTES_DIR && git add . && git commit -m " $MESSAGE "  
+  cd $NOTES_DIR && git status && sleep 2
+  cd $NOTES_DIR && git push
+  cd $CURRENT_DIR 
+  echo "Notes Updated!" 
+ } 
+  
+###############################
+# Ggh-cli Login functions
+############################### 
+
+ghlistkey() {
+  gh ssh-key list
+}
+
+ghlistkeys() {
+  gh ssh-key list
+} 
+
+ghdelkey () {
+ GitHub CLI api
+ https://cli.github.com/manual/gh_api
+  gh api \
+    --method DELETE \
+    -H "Accept: application/vnd.github+json" \
+    /user/keys/70644299
+}
+
+gh_cli_login_function () {
+    gh auth logout -h $GHHOST
+    echo "Logging in as $GHUSER" && sleep 1 
+    #gh auth login --with-token < ~/ghclitoken.txt
+    echo $GHCLI_TOKEN | gh auth login -h $GHHOST --with-token  
+#    echo $CLITOKEN_HOME | gh auth login -h $ghcli_proto_mode --with-token  
+    echo "Set gh-cli Protocol" && sleep 1
+    gh config set git_protocol $GHCLI_PROTO --host $ghcli_proto_mode 
+    # print status to confirm connection
+    echo "Check Login status" && sleep 1 
+    # print status to confirm connection
+    gh auth status    
+}
+
+ghpt () {
+if [[ gh auth status | grep -q $ghuser_home ]]
+then
+ echo "$ghuser_home not found "
+fi 
+}
+
+ghp1 () {
+# If statement to switch between profiles 
+if [[ gh auth status | grep -q $ghuser_home ]]
+then
+  # WORK PROFILE 
+  echo "Currently logged in as $ghuser_home" && sleep 1 
+  echo "Swithcing to $ghuser_work" && sleep 1 
+  $GHHOST=$ghhost_work
+  $GHUSER=$ghuser_work
+  export $GHCLI_TOKEN=$GHCLI_TOKEN_WORK 
+  $GHCLI_PROTO=$ghcli_proto_work
+  gh_cli_login_function
+elif [[ gh auth status | grep -q $ghuser_work ]]
+then
+# HOME PROFILE 
+  echo "Currently logged in as $ghuser_work" && sleep 1 
+  echo "Swithcing to $ghuser_home" && sleep 1 
+  $GHHOST=$ghcli_proto_mode
+  $GHUSER=$ghuser_home
+  export $GHCLI_TOKEN=$GHCLI_TOKEN_HOME 
+  $GHCLI_PROTO=$GHCLI_PROTO_HOME
+  gh_cli_login_function
+elif [[ gh auth status | grep -q 'not logged into' ]]
+then
+  echo "You are not logged into any Github hosts"
+  echo "Login with the gh-login shortcut"
+  exit 
+else
+  echo "Nothing happened, Sum Ting Wong!"
+fi
+}
+
+ghp-login () {
+# HOME PROFILE 
+  $GHHOST=$ghcli_proto_mode
+  $GHUSER=$ghuser_home
+  export $GHCLI_TOKEN=$GHCLI_TOKEN_HOME 
+  $GHCLI_PROTO=$GHCLI_PROTO_HOME
+  gh_cli_login_function
+}
+#####
+# OLD 
+#####
+#ghph () {
+#  GHUSER=t-lastname
+#  ghcli_proto_mode=github.com
+#  ghhost_work=github.com
+#  GHCLI_PROTO=https 
+#  # check current user 
+#  gh auth status 
+#  # unset current gh token  
+#  echo "LOGGING OUT OF EXISTING GH PROFILE" && sleep 1
+#  echo "LOGOUT OF WORK PROFILE" && sleep 1 
+#  gh auth logout -h $ghhost_work 
+#
+#  echo "LOG OUT TME PROFILE" && sleep 1 
+#  gh auth logout -h $ghcli_proto_mode
+#
+#  # set env variable to gh-work token 
+#  echo "Setting up gh_token" && sleep 1
+#  export GH_TOKEN=$CLITOKEN_WORK
+#  echo $GHCLI_TOKEN_HOME > ~/ghclitoken.txt
+#
+#  echo "Logging into gh-cli as $GHUSER" && sleep 1
+#  #echo $CLITOKEN_WORK | gh auth login -h $ghhost_work --with-token  
+#  gh auth login --with-token < ~/ghclitoken.txt
+#
+#  echo "Set gh-cli Protocol" && sleep 1
+#  gh config set git_protocol https --host $ghcli_proto_mode 
+#
+#  # print status to confirm connection
+#  echo "Check Login status $GHUSER" && sleep 1 
+#  # print status to confirm connection
+#  gh auth status  
+#}
+#
+#ghpw () {
+#  GHUSER=tmeral_nike
+#  ghcli_proto_mode=github.com
+#  ghhost_work=github.com
+#  GHCLI_PROTO=https 
+#  # check current user 
+#  gh auth status 
+#  # unset current gh token  
+#  echo "LOGGING OUT OF EXISTING GH PROFILE" && sleep 1
+#  echo "LOGOUT OF WORK PROFILE" && sleep 1 
+#  gh auth logout -h $ghhost_work 
+#
+#  echo "LOG OUT TME PROFILE" && sleep 1 
+#  gh auth logout -h $ghcli_proto_mode
+#
+#  # set env variable to gh-work token 
+#  echo "Setting up gh_token" && sleep 1
+#  export GH_TOKEN=$CLITOKEN_WORK
+#  echo $GHCLI_TOKEN_WORK > ~/ghclitoken.txt
+#
+#  echo "Logging into gh-cli as $GHUSER" && sleep 1
+#  #echo $CLITOKEN_WORK | gh auth login -h $ghhost_work --with-token  
+#  gh auth login --with-token < ~/ghclitoken.txt
+#
+#  echo "Set gh-cli Protocol to HTTPS" && sleep 1
+#  gh config set git_protocol https --host $ghhost_work 
+#
+#  # print status to confirm connection
+#  echo "Check Login status $GHUSER" && sleep 1 
+#  # print status to confirm connection
+#  gh auth status  
+#} 
+
+
+###############################
+# MISC ALIASES 
+############################### 
+# search all projects' contents in the project's directory for the filter
+function findp() { 
+  if [[ $1 == '--all' ]]; then
+    if [[ $2 == '' ]]; then
+      echo "search filter missing, use '$0 help' for more information.\nexiting..."
+    fi
+    rg -A5 -B3 -i -e "$2" $PROJECT_PATH
+  else
+    local args=(${@:1:#})
+    local searchCMD="rg --type-add 'tf:*.{tf,tfvars}' --type-add 'gomod:*.mod' --type-add 'jenk:Jenkinsfile' -B1 -A10 -i -t tf -t gomod -t jenk -U '' $PROJECT_PATH"
+    for arg in $args
+    do
+      local add=" | rg -i --fixed-strings --color=always '$arg' "
+      if [[ $arg == *"-"* ]]; then
+        local add=" | rg -i --color=always -e '$arg' "
+      fi
+      searchCMD="$searchCMD$add"
+    done
+    eval $searchCMD
+  fi
+}
+
+# search and get projects that match the provided filters
+function listp() { 
+  local args=(${@:1:#})
+  if [[ $args == "" ]]; then
+    echo "search filter missing, use '$0 help' for more information.\nexiting......"
+    return
+  fi
+  local color="always"
+  if [[ $1 == *"--no-color"* ]]; then
+    args=(${@:2:#})
+    color="never"
+  fi
+  local searchCMD="ls $PROJECT_PATH"
+  for arg in $args
+  do
+    local add=" | rg -i --fixed-strings --color=$color '$arg' "
+    if [[ $arg == *"-"* ]]; then
+      local add=" | rg -i --color=$color -e '$arg' "
+    fi
+    searchCMD="$searchCMD$add"
+  done
+  local found=$(eval $searchCMD)
+  if [[ $found == "" ]]; then
+    echo "failed to find matching projects..."
+  else
+    if [[ $color == "always" ]]; then
+      echo "[ found ]:"
+    fi
+    echo $found
+  fi
+}
+
+# list all terraform projects
+function listf() { 
+  local tfs=()
+  local projects=($(ls $PROJECT_PATH))
+  for project in $projects
+  do
+    local prls=$(ls $PROJECT_PATH/$project)
+    if [[ $prls == *"main.tf"* ]]; then
+      echo $project
+    fi
+  done
+} 
+
+# search the projects directory that match the filter and cd into the result
+function cdpr() {
+  local searchCMD="ls $PROJECT_PATH"
+  for var in ${@:1:#}
+  do
+    searchCMD="$searchCMD | rg -i --fixed-strings '$var'"
+  done
+  local found=$(eval $searchCMD)
+  local first=$(head -1 <<< $found | sed -E "s/"$'\E'"\[([0-9]{1,3}((;[0-9]{1,3})*)?)?[m|K]//g")
+  cd $PROJECT_PATH/$first
+} 
+
+# print the current branch checked out
+function getprojectbranch() {
+  if [[ $1 == "" ]]; then
+    echo "missing project name, exiting..."
+  fi
+  local project=$1
+  local currentPath=$(pwd)
+  cd $PROJECT_PATH/$project
+  git branch --show-current
+  cd $currentPath
+}
+
+###############################
+# MORE GIT FUNCTIONS 
+############################### 
+# checkout master or main
+function gcm() {
+  git checkout $(gitdefaultbranch)
+} 
+# pull from master or main
+function gpm() { 
+  git pull origin $(gitdefaultbranch)
+} 
+# git reset and remove tf lock if applicable
+function grh() { 
+  git reset --hard
+  local gst=$(gst)
+  if [[ $gst == *"terraform.lock.hcl"* ]]; then
+    rmtfl
+  fi
+}
+
+# search remote branches and checkout branch that matches the filter
+function gco() { 
+  git fetch --all
+  local searchCMD="git branch -a | rg -i origin | rg -v 'HEAD'"
+  for var in ${@:1:#}
+  do
+    searchCMD="${searchCMD} | rg -i '$var' "
+  done
+  local found=$(eval $searchCMD)
+  local first=$(head -1 <<< $found)
+  local branch=${first##*"remotes/origin/"}
+  git checkout $branch
+}
+
+# git clone to $PROJECT_PATH
+function gitc() {
+  local url=$1
+  local currentpath=$(pwd)
+  cd $PROJECT_PATH
+  git clone $url
+  sleep .5
+  cd $currentpath
+}
+
+# create new branch
+function gnb() { 
+  branchName=$1
+  git checkout -b $branchName
+  git push --set-upstream origin $branchName
+}
+
+# delete branch
+function gdb() { 
+  branchName=$1
+  git branch -d $branchName
+  git push origin --delete $branchName
+}
+
+# delete branch and return to master or main
+function gdbm() { 
+  local branches=$(git branch)
+  local top=$(gitdefaultbranch)
+  local oldbranch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ $oldbranch == $top ]]; then
+    echo "current branch is $top, exiting..."
+    return
+  fi
+  git checkout $top
+  git pull
+  gdb $oldbranch
+}
+
+# create pull request from current branch to target branch, default to master
+function gpr() { 
+  local target=$1
+  if [[ $target == "" ]]; then
+    target=$(gitdefaultbranch)
+  fi
+  local currentbranch=$(git branch --show-current)
+  local prstatus=$(gh pr status)
+  local currentbranchstatus=$(echo $prstatus | rg -i "$currentbranch")
+  if [[ $currentbranchstatus == *"Merged"* || $currentbranchstatus == *"Closed"* || $prstatus == *"There is no pull request associated with [$currentbranch]"* ]]; then
+    echo "[ creating pull request... ]"
+    gh pr create --base $target --fill
+    local prurl=$(getprurl $currentbranch)
+    echo -n $prurl | pbcopy
+    echo "copied to clipboard"
+  else
+    echo "[ pull request already exists ]"
+    local prurl=$(getprurl $currentbranch)
+    echo "pr url: $prurl"
+    echo -n $prurl | pbcopy
+    echo "copied to clipboard"
+  fi
+}
+
+# git add and commit
+function gcom() { 
+  local msg=${@:1:#}
+  if [[ $msg == "" ]]; then
+    echo "missing commit message, use '$0 help' for more information.\nexiting..."
+    return
+  else
+    echo "Running command: git add . && git commit -m \"$msg\""
+    echo "[ GIT ADD ]"
+    git add .
+    git status
+    echo "[ GIT COMMIT ]"
+    git commit -m "$msg"
+    echo "[ GIT COMMIT STATUS ]"
+    git status
+  fi
+}
+
+# git add and commit with commitzen
+function gcz() { 
+  git add .
+  cz commit
+}
+
+# open current project's github repo on current branch
+function gopen() { 
+  echo "opening github repo in chrome..."
+  gh repo view -b $(git branch --show-current) -w > /dev/null 2>&1
+}
+ 
+# search repos in github using filter and clone to local
+function grclone() {
+  local args=(${@:1:#})
+  local searchCMD="gh repo list -L 1000 --no-archived"
+  for arg in $args
+  do
+    local add=" | rg -i --fixed-strings --color=never '$arg' "
+    if [[ $arg == *"-"* ]]; then
+      local add=" | rg -i --color=never -e '$arg' "
+    fi
+    searchCMD="$searchCMD$add"
+  done
+  echo "searching for repositories..."
+  local found=($(eval $searchCMD | sort))
+  if [[ $found == "" ]]; then
+    echo "no matching projects found, use '$0 help' for more information.\nexiting..."
+    return
+  fi
+  local first=$found[1]
+  echo "[ found ]:"
+  for repo in $found
+  do 
+    if [[ $repo == *""* ]]; then
+      echo "- $repo"
+    fi
+  done
+  echo -n "do you want to clone: [ $first ]: "
+  read -k1
+  if [[ ${REPLY} == $'\n' ]]; then
+    echo "[ cloning ]: $first"
+    gitc "$WORKGITURL$first.git"
+  else
+    echo "\ncancelling clone..."
+  fi
+}
+
+function gitdefaultbranch() { #noface
+  local gitbranch=$(git branch -a)
+  if [[ $gitbranch == *"origin/HEAD -> origin/main"* ]]; then
+    echo "main"
+  else
+    echo "master"
+  fi
+} 
+
+function gitpullstatus() { #noface
+  local projectname=$1
+  echo -n "$projectname : "
+  local pull=$(git pull)
+  if [[ $pull == *"Already up to date"* ]]; then
+    echo "good"
+  elif [[ $pull == *"CONFLICT"* ]]; then
+    echo "conflict"
+  elif [[ $pull == *"Aborting"* ]]; then
+    echo "local changes"
+  elif [[ $pull == *"files changed"* ]]; then
+    echo "pulled"
+  else
+    echo $pull
+  fi
+}
+ 
+
+# get url of pull request from current branch
+function getprurl() { 
+  local currentbranch=$1
+  local msg=$(gh pr status | rg $currentbranch | xargs)
+  local number=${msg%%" "*}
+  number=${number##*"#"}
+  local prstatus=$(gh pr view $number | rg "url" | xargs)
+  local url=${prstatus##*"url: "}
+  echo $url 
+}
+
+# Run git pull recursively in projects dir  
+function gpall() {
+  # perform a git pull on every dir in the projects dir.   
+  find $PROJECT_PATH -mindepth 1 -maxdepth 1 -type d -print -exec git -C {} pull \; 
+} 
+
+# Merge pull request, checkout base branch
+function gprm() { 
+  local currentPath=""
+  if [[ $1 != "" ]]; then
+    currentpath=$(pwd)
+    local first=$(listp --no-color ${@:1:#} | HEAD -1)
+    if [[ $first == *"failed"* ]]; then
+      echo "$first\n exiting..."
+      return
+    fi
+    echo -n "check for pull requests on [ $first]: "
+    read -k1
+    if [[ ${REPLY} == $'\n' ]]; then
+      cd $PROJECT_PATH/$first
+    else
+      echo "\nexiting..."
+      return
+    fi
+  fi
+  local currentBranch=$(git branch --show-current)
+  echo -n "merge pull request from [ $currentBranch ]: "
+  read -k1
+  if [[ ${REPLY} == $'\n' ]]; then
+    local pr=($(gh pr list))
+    if [[ $pr == "" ]]; then
+      echo "no pull requests open found, exiting..."
+      if [[ $1 != "" ]]; then
+        cd $currentpath
+      fi
+      return
+    fi
+    if [[ $(gh pr view --json reviews | jq '.reviews[].state') != *"APPROVED"* ]]; then
+      echo "the pull request on this branch has not yet been approved, exiting..."
+      if [[ $1 != "" ]]; then
+        cd $currentpath
+      fi
+      return
+    fi
+    local prbase=$(gh pr view --json baseRefName | jq '.baseRefName')
+    prbase=${prbase//'"'/''}
+    gh pr merge -m
+    gco $prbase
+    git pull
+  else
+    echo "\nexiting..."
+  fi
+  if [[ $1 != "" ]]; then
+    sleep 1
+    cd $currentpath
+  fi
+}
+ 

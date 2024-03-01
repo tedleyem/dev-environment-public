@@ -1,0 +1,9 @@
+---
+- import_tasks: "system.yml"
+- import_tasks: "install.yml"
+- import_tasks: "packages.yml"
+- import_tasks: "projects.yml" 
+
+# TODO: setup docker  
+#- import_tasks: "docker.yml"
+

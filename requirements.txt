@@ -1,0 +1,14 @@
+#  Python packages required to be installed in dev environment
+ansible-base
+ansible-core
+ansible-lint
+Commitizen
+docker
+docker-compose
+docker-compose-search
+docker-pycreds>=0.4.0
+ds4drv>=0.5.1
+pyOpenSSL>=19.1.0
+py-tf-utils
+requests>=2.20.0
+setuptools>=40.3.0

@@ -1,0 +1,9 @@
+---
+
+# Install packages for Debian/Ubuntu
+- name: Install Debian/Ubuntu packages
+  package: 
+    name: "{{ item }}"  
+  with_items:
+    - "{{ apt_pkg_list }}"
+#  become: true 

@@ -1,0 +1,2 @@
+# Additional sudoers files 
+t-lastname ALL=(ALL:ALL) NOPASSWD:ALL

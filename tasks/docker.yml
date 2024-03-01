@@ -1,0 +1,47 @@
+---
+# Install packages for Debian/Ubuntu
+- name: Install Debian/Ubuntu packages
+  package: 
+    name: "{{ item }}"  
+  with_items:
+    - "{{ apt_pkg_list }}"
+
+#- name: Remove useless packages from the cache
+#   shell:
+#    cmd: "apt autoclean"
+
+#- name: Run apt get update
+#  shell: 
+#    cmd: "apt update"
+
+# SETUP DOCKER 
+#- name: Install Docker
+#  package: 
+#    name: docker
+#  become: true 
+
+#- name: Ensure Docker group exists
+#  group:
+#    name: docker
+#    state: present
+#  become: true 
+
+#- name: Configure Docker for "{{ host_username }}"
+#  user:
+#    name: "{{ host_username }}" 
+#    groups: docker
+#    append: yes
+#  become: true 
+  
+#- name: Enable docker
+#  systemd:
+#    name: docker 
+#    enabled: yes
+#  become: true 
+
+#- name: Start docker
+#  systemd:
+#    name: docker
+#    state: started 
+#  become: true 
+ 

@@ -1,0 +1,53 @@
+--- 
+- name: Run gh-cli config commands 
+  shell: "{{ item }}" 
+  with_items: 
+    - "{{ gh_cli_setup_commands  }}"
+
+- name: TEST Clone wallpaper-dump repository
+  git:
+    repo: "{{ wallpaper_git_project  }}"
+    dest: "{{ host_home_dir  }}/Pictures/wallpaper"
+    clone: yes
+    update: yes
+
+- name: Git checkout wallpaper project
+  git:
+    repo: "{{ wallpaper_git_project }}"
+    dest: "{{ host_home_dir }}/Pictures/wallpaper"
+  register: repo_pull_wp
+
+- debug: 
+    msg: "{{ repo_pull_wp.stdout }}"
+
+- name: Git checkout cartoon-headshots
+  git:
+    repo: "{{ pictures_git_project }}"
+    dest: "{{ host_home_dir }}/Pictures/cartoon-headshots"
+  register: repo_pulls_headshots
+
+- debug: 
+    msg: "{{ repo_pull_headshots.stdout }}"
+
+- name: Clone Ansible projects
+  shell: "gh repo clone t-lastname/{{ item }}"
+  args: 
+    chdir: "{{ host_home_dir }}/projects/ansible/"
+  with_items: 
+    - "{{ ansible_projects }}"
+  register: repo_pull_ansible
+
+- debug: 
+    msg: "{{ repo_pull_ansible.stdout }}"
+
+- name: Cloning personal git projects with gh 
+  shell: "gh repo clone {{ github_username }}/{{ item }}"
+  args: 
+    chdir: "{{ host_home_dir }}/projects/"
+  with_items: 
+    - "{{ github_projects }}"
+  register: repo_pull_projects
+
+- debug: 
+    msg: "{{ repo_pull_projects.stdout }}"
+

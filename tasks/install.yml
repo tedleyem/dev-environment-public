@@ -1,0 +1,16 @@
+---
+ 
+#- name: Install specified python requirements
+#  pip:
+#    requirements: "/files/requirements.txt"
+
+- debug:
+    msg: "Searching for OS Platform for package install"
+
+# setup aliases for Linux environment
+- import_tasks: "ubuntu-install.yml"
+  when: ansible_facts['distribution'] == "Ubuntu" or ansible_facts['distribution'] == "Debian"
+
+# setup aliasese for Mac Os environment  
+- import_tasks: "osx-install.yml" 
+  when: ansible_facts['os_family'] == "Darwin"

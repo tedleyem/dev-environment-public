@@ -1,0 +1,50 @@
+--- 
+- name: get the username variable
+  shell: "whoami"
+  register: hostusername
+
+- name: Set facts 
+  set_fact:
+    host_username: "{{ lookup('env','USER') }}"
+    host_home_dir: "{{ lookup('env','HOME') }}"
+
+- name: Setting up bash aliases
+  template: 
+    src: "{{ playbook_dir }}/files/bash_aliases"
+    dest: "{{ host_home_dir }}/.bash_aliases" 
+
+# CONFIGURE GH-CLI GLOBAL VARS
+- name: create directories if they don't exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ host_username }}"
+    group: "{{ host_username }}"
+    mode: 0775
+  loop:
+    - "{{ host_home_dir }}/Pictures"
+    - "{{ host_home_dir }}/projects"
+    - "{{ host_home_dir }}/projects/work"
+    - "{{ host_home_dir }}/projects/personal" 
+    - "{{ host_home_dir }}/projects/ansible/"
+    - "{{ host_home_dir }}/.vim/bundle"
+
+- name: copy vimrc 
+  copy:
+    src: "files/vimrc"
+    dest: "{{ host_home_dir }}/.vimrc"  
+
+- name: Checking Vundle dir exists
+  stat:
+    path: "{{ host_home_dir }}/.vim/bundle/Vundle.vim"
+  register: vundle_check
+
+- name: Git checkout Vundle.vim
+  git:
+    repo: "https://github.com/VundleVim/Vundle.vim.git"
+    dest: "{{ host_home_dir }}/.vim/bundle/Vundle.vim"
+  when: vundle_check.stat.exists == false
+
+- name: INSTALLING VIM PLUGINS
+  shell: 'vim +PluginInstall +qall'
+

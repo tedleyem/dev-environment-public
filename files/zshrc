@@ -1,0 +1,127 @@
+# Aliases & Functions for zrcsh specific to firstname- -lastname  
+# ZSH THEME 
+ZSH_THEME=amuse
+TIMESTAMP=`date`
+# project variable
+export PROJECT_PATH="${HOME}/projects"
+export FPATH=~/.zsh_funcs
+# setting up addtitional functions for zshell 
+fpath=(~/.zsh_funcs $fpath);
+autoload -U ~/.zsh_funcs
+# Zsh plugins 
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete)
+
+###############################
+# ALIASES 
+############################### 
+# launchctl alias
+alias start='launchctl start'
+alias stop='launchctl stop'
+alias status='launchctl status'
+alias restart='launchctl restart' 
+# zsh alias 
+alias zedit='vim ~/.zshrc'
+alias srcz='source ~/.zshrc' 
+alias cdp='cd ~/projects' 
+alias update-vim='vim +PluginInstall +qall'
+alias updatevim='vim +PluginInstall +qall'
+alias precommit='pre-commit'
+alias preinit='precommit install && precommit autoupdate'  
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF' 
+alias ls='ls --color=auto'
+# CLI shortcuts 
+alias check-moon='curl wttr.in/Moon'
+alias moon='curl wttr.in/Moon'
+alias check-weather='curl wttr.in'
+alias weather='curl wttr.in'
+alias crypto-rates='curl rate.sx' 
+alias crypto='curl rate.sx' 
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias grep='grep --color=auto' 
+alias check-size='du -sh *'
+alias dush='du -sh *'
+alias sort-size='du -sh * | sort -h'
+alias dusort='du -sh * | sort -h' 
+alias tartar='tar -zxvf'
+###############################
+# Git shortcuts 
+###############################
+alias gstat='git status'
+alias gp='git push'
+alias ghas='gh auth status' # get current gh-cli status 
+ghls='gh repo list -L 1000 --no-archived ' # search and list all repos that match the filters
+###############################
+# Vagrant shortcuts 
+###############################
+alias vg='vagrant'
+alias vgu='vagrant up'
+alias vgp='vagrant up --provision' 
+alias vgup='vagrant provision'
+alias vgd='vagrant destroy'
+alias vgdf='vagrant destroy -f'
+###############################
+# kubernetes shortcut 
+###############################
+alias k='kubectl'
+alias mk='minikube' 
+###############################
+# Pyhton Aliases
+###############################
+alias p3='python3'
+alias p3p='python3 -m pip'
+alias p3pi='python3 -m pip install'
+alias p3pu='python3 -m pip uninstall'
+
+###############################
+# DOCKER ALIASES
+###############################
+alias dcps='sudo docker ps'
+alias dci='sudo docker images'
+alias dcvls='sudo docker volume ls'
+alias dcnls='sudo docker network ls'
+alias dck='docker rmi -f $(docker images -a -q)'
+alias dcstop='sudo docker stop $(docker ps -a -q)'
+alias dcom='docker-compose'
+alias dcu='docker-compose up -d'
+alias dcd='docker-compose down'
+alias dcl='docker-compose logs'
+alias dckb='docker-compose build'
+alias dcub='docker-compose up --build'
+alias dcb='docker-compose build' 
+alias dcvp='docker volume prune -f'
+alias dcnp='docker network prune -f'
+alias dcrmi='docker rmi -f $(docker images -a -q)'
+###############################
+# AWS ALIASES
+###############################
+alias sauthp='stsauth profiles'
+alias sauthl='stsauth authenticate -u ${WORK_EMAIL} -p { AWS_PASSWORD }'
+###############################
+# TERRAFORM ALIASES
+###############################
+alias tf='terraform'
+alias tfutils='tf-utils'
+alias tfi='tf init'
+alias tfiu='tf init -upgrade'
+alias rmtf='rm -rf .terraform && echo "deleted .terraform directory"'
+alias rmtfl='rm -rf .terraform.lock.hcl && echo "deleted .terraform.lock.hcl"'
+
+
+###############################
+# PASS CLI Shortcuts
+###############################
+alias aacopy='pass show aa-account | pbcopy'
+
+parse_git_branch() {
+    git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
+}
+COLOR_DEF='%f'
+COLOR_USR='%F{243}'
+COLOR_DIR='%F{197}'
+COLOR_GIT='%F{39}'
+NEWLINE=$'\n'
+setopt PROMPT_SUBST
+export PROMPT='${COLOR_USR}%n@%M ${COLOR_DIR}%d ${COLOR_GIT}$(parse_git_branch)${COLOR_DEF}${NEWLINE}%% '

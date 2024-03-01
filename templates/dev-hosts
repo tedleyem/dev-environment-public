@@ -1,0 +1,12 @@
+# Ansible Inventory File for Dev Environment
+# examples are commented out
+
+# ansible localhost
+localhost ansible_python_interpreter=/usr/bin/python3 ansible_connection=local
+
+# ansible Host with IP address
+#localhost              ansible_connection=local
+
+# ansible host that connects via ssh as specific user
+#other1.example.com     ansible_connection=ssh        ansible_user=test
+#other2.example.com     ansible_connection=ssh        ansible_user=test
